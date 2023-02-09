@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "6ALBxZSu2phDSNgF4z8VKS83++O4lF0lLO3DV+BnOP4=",
+  "Source": "RolesAndJWT",
+  "BasePath": "_content/RolesAndJWT",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
