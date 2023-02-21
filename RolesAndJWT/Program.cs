@@ -11,8 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Conn")));
 //For Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -39,19 +37,21 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
-builder.Services.AddTransient<ITokenService, TokenService>();
+//Services
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
 app.UseCors(options =>
 options.WithOrigins("*").
 AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
+app.UseRouting();
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();

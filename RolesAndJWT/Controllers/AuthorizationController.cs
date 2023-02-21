@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using RolesAndJWT.Models;
 using RolesAndJWT.Models.Domain;
 using RolesAndJWT.Models.Dto;
@@ -30,6 +32,7 @@ namespace RolesAndJWT.Controllers
         public async Task<IActionResult> Login([FromBody]LoginModel model)
         {
             var user = await userManager.FindByNameAsync(model.Username);
+
             if(user!=null && await userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles=await userManager.GetRolesAsync(user);
@@ -53,6 +56,8 @@ namespace RolesAndJWT.Controllers
                         RefreshToken = refreshToken,
                         RefreshTokenExpiry = DateTime.Now.AddDays(7)
                     };
+                    _context.TokenInfo.AddAsync(info);
+                    _context.SaveChanges();
                 }
                 else
                 {
@@ -78,7 +83,7 @@ namespace RolesAndJWT.Controllers
                     Message = "Logged In"
                 });
             }
-            return Ok(
+            return NotFound(
                 new LoginResponse
                 {
                     StatusCode = 0,
@@ -116,11 +121,11 @@ namespace RolesAndJWT.Controllers
                 status.Message = "User Created Failed";
                 return Ok(status);
             }
-            if (!await roleManager.RoleExistsAsync(UserRoles.Customer))
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.Customer));
-            if(await roleManager.RoleExistsAsync(UserRoles.Customer))
+            if (!await roleManager.RoleExistsAsync(UserRoles.Employee))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Employee));
+            if(await roleManager.RoleExistsAsync(UserRoles.Employee))
             {
-                await userManager.AddToRoleAsync(user, UserRoles.Customer);
+                await userManager.AddToRoleAsync(user, UserRoles.Employee);
             }
             status.StatusCode = 1;
             status.Message = "Successfully registered";

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace RolesAndJWT.Models.Domain
 {
@@ -10,5 +12,7 @@ namespace RolesAndJWT.Models.Domain
 
         }
         public DbSet<TokenInfo> TokenInfo { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }
